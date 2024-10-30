@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="Webflow" name="generator">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/publishpro-cms.webflow.css" rel="stylesheet" type="text/css">
+    <title>PublishPro CMS</title>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="margin: 0;">PublishPro</h1>
+            <div>
+                <!-- These buttons will later be protected by authentication -->
+                <button class="button">Sign In</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Layout -->
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div style="margin-bottom: 2rem;">
+                <h3>Quick Actions</h3>
+                <button class="button" style="width: 100%; margin-bottom: 0.5rem;">New Article</button>
+                <button class="button button-secondary" style="width: 100%;">View Analytics</button>
+            </div>
+            
+            <div>
+                <h3>Navigation</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 1rem;">📝 Articles</li>
+                    <li style="margin-bottom: 1rem;">👥 Team</li>
+                    <li style="margin-bottom: 1rem;">📊 Analytics</li>
+                    <li style="margin-bottom: 1rem;">⚙️ Settings</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div style="margin-bottom: 2rem;">
+                <h2>Content Dashboard</h2>
+                <p>Welcome to PublishPro CMS. Manage your content efficiently.</p>
+            </div>
+
+            <!-- Content Overview -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div class="card">
+                    <h3 style="margin-top: 0;">10</h3>
+                    <p style="margin-bottom: 0;">Draft Articles</p>
+                </div>
+                <div class="card">
+                    <h3 style="margin-top: 0;">5</h3>
+                    <p style="margin-bottom: 0;">In Review</p>
+                </div>
+                <div class="card">
+                    <h3 style="margin-top: 0;">25</h3>
+                    <p style="margin-bottom: 0;">Published</p>
+                </div>
+            </div>
+
+            <!-- Recent Articles Table -->
+            <div class="card">
+                <h3>Recent Articles</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Status</th>
+                            <th>Last Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Getting Started with Webflow</td>
+                            <td>John Smith</td>
+                            <td><span class="status status-published">Published</span></td>
+                            <td>2024-10-28</td>
+                            <td>
+                                <button class="button" style="padding: 0.5rem;">Edit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Authentication Best Practices</td>
+                            <td>Jane Doe</td>
+                            <td><span class="status status-review">In Review</span></td>
+                            <td>2024-10-29</td>
+                            <td>
+                                <button class="button" style="padding: 0.5rem;">Edit</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>RBAC Explained</td>
+                            <td>Mike Johnson</td>
+                            <td><span class="status status-draft">Draft</span></td>
+                            <td>2024-10-29</td>
+                            <td>
+                                <button class="button" style="padding: 0.5rem;">Edit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
