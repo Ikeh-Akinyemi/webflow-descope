@@ -11,7 +11,7 @@
     <!-- Descope Web Component -->
     <script src="https://unpkg.com/@descope/web-component@latest/dist/index.js"></script>
     <!-- Descope User Profile Widget -->
-    <script src="https://static.descope.com/npm/@descope/user-profile-widget@1.9.1/dist/index.js"></script>
+    <script src="https://static.descope.com/npm/@descope/user-profile-widget@0.0.113/dist/index.js"></script>
 </head>
 
 <body>
@@ -33,8 +33,10 @@
                 <!-- Authenticated State -->
                 <div id="user-profile" class="user-profile w-hide">
                     <span id="user-name" class="user-name"></span>
-                    <descope-user-profile-widget project-id="P2o6agrrcqa5Rpv14fHxBixhtyxG"
-                        widget-id="user-profile-widget" theme="light" />
+                    <div id="profile-widget-container" class="profile-widget-container">
+                        <descope-user-profile-widget project-id="P2o6agrrcqa5Rpv14fHxBixhtyxG"
+                            widget-id="user-profile-widget" theme="light" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,8 +48,9 @@
         <div class="sidebar">
             <div style="margin-bottom: 2rem;">
                 <h3>Quick Actions</h3>
-                <button class="button" style="width: 100%; margin-bottom: 0.5rem;">New Article</button>
-                <button class="button button-secondary" style="width: 100%;">View Analytics</button>
+                <button class="button" data-permission="create" style="width: 100%; margin-bottom: 0.5rem;">New
+                    Article</button>
+                <button class="button button-secondary" data-role="editor" style="width: 100%;">View Analytics</button>
             </div>
 
             <div>
@@ -104,9 +107,14 @@
                             <td><span class="status status-published">Published</span></td>
                             <td>2024-10-28</td>
                             <td>
-                                <button class="button" style="padding: 0.5rem;">Edit</button>
-                                <button class="button" style="padding: 0.5rem;">Delete</button>
-                                <button class="button" style="padding: 0.5rem;">Publish</button>
+                                <div class="button-group">
+                                    <button class="button" data-permission="update"
+                                        style="padding: 0.5rem;">Edit</button>
+                                    <button class="button" data-permission="delete"
+                                        style="padding: 0.5rem;">Delete</button>
+                                    <button class="button" data-permission="publish"
+                                        style="padding: 0.5rem;">Publish</button>
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -115,9 +123,14 @@
                             <td><span class="status status-review">In Review</span></td>
                             <td>2024-10-29</td>
                             <td>
-                                <button class="button" style="padding: 0.5rem;">Edit</button>
-                                <button class="button" style="padding: 0.5rem;">Delete</button>
-                                <button class="button" style="padding: 0.5rem;">Publish</button>
+                                <div class="button-group">
+                                    <button class="button" data-permission="update"
+                                        style="padding: 0.5rem;">Edit</button>
+                                    <button class="button" data-permission="delete"
+                                        style="padding: 0.5rem;">Delete</button>
+                                    <button class="button" data-permission="publish"
+                                        style="padding: 0.5rem;">Publish</button>
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -126,9 +139,14 @@
                             <td><span class="status status-draft">Draft</span></td>
                             <td>2024-10-29</td>
                             <td>
-                                <button class="button" style="padding: 0.5rem;">Edit</button>
-                                <button class="button" style="padding: 0.5rem;">Delete</button>
-                                <button class="button" style="padding: 0.5rem;">Publish</button>
+                                <div class="button-group">
+                                    <button class="button" data-permission="update"
+                                        style="padding: 0.5rem;">Edit</button>
+                                    <button class="button" data-permission="delete"
+                                        style="padding: 0.5rem;">Delete</button>
+                                    <button class="button" data-permission="publish"
+                                        style="padding: 0.5rem;">Publish</button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -145,6 +163,7 @@
             const signInButton = document.getElementById('sign-in-button');
             const userProfile = document.getElementById('user-profile');
             const userName = document.getElementById('user-name');
+            const profileWidgetContainer = document.getElementById('profile-widget-container');
 
             // Auth Component Setup
             const authComponent = document.querySelector('descope-wc');
@@ -155,18 +174,92 @@
             const profileWidget = document.querySelector('descope-user-profile-widget');
             profileWidget.logout = handleLogout;
 
+            userName.addEventListener('click', function (e) {
+                e.stopPropagation();
+                profileWidgetContainer.classList.toggle('active');
+            });
+
+            // Close profile widget when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!profileWidgetContainer.contains(e.target) &&
+                    !userNameElement.contains(e.target)) {
+                    profileWidgetContainer.classList.remove('active');
+                }
+            });
+
             // Show Auth Modal
             signInButton.addEventListener('click', function () {
                 authModal.classList.remove('w-hide');
             });
 
-            // Handle Successful Auth
+            function checkPermission(user, permission) {
+                // Check if user has editor role (case-insensitive check)
+                const hasEditorRole = user.roleNames && user.roleNames.some(role =>
+                    role.toLowerCase() === 'editor'
+                );
+
+                // Check if user has writer role (case-insensitive check)
+                const hasWriterRole = user.roleNames && user.roleNames.some(role =>
+                    role.toLowerCase() === 'writer'
+                );
+
+                console.log(`Checking permission ${permission} for roles:`, user.roleNames);
+                console.log('Has Editor Role:', hasEditorRole);
+                console.log('Has Writer Role:', hasWriterRole);
+
+                // Editor has all permissions
+                if (hasEditorRole) {
+                    return true;
+                }
+
+                // Writer has create and update permissions
+                if (hasWriterRole) {
+                    return ['create', 'update'].includes(permission);
+                }
+
+                return false;
+            }
+
+            function updateUIBasedOnPermissions(user) {
+                console.log('Updating UI for roles:', user.roleNames);
+
+                const permissions = ['create', 'update', 'delete', 'publish'];
+
+                permissions.forEach(permission => {
+                    const elements = document.querySelectorAll(`[data-permission="${permission}"]`);
+                    const shouldDisplay = checkPermission(user, permission);
+                    console.log(`Found ${elements.length} elements with permission ${permission}`);
+                    elements.forEach(element => {
+                        element.style.display = shouldDisplay ? 'inline-block' : 'none';
+                        console.log(`Setting ${permission} element display to:`, element.style.display);
+                    });
+                });
+
+                if (user.roleNames) {
+                    const isEditor = user.roleNames.some(role => role.toLowerCase() === 'editor');
+                    const isWriter = user.roleNames.some(role => role.toLowerCase() === 'writer');
+
+                    document.querySelectorAll('[data-role="editor"]').forEach(element => {
+                        element.style.display = isEditor ? 'block' : 'none';
+                    });
+
+                    document.querySelectorAll('[data-role="writer"]').forEach(element => {
+                        element.style.display = isWriter ? 'block' : 'none';
+                    });
+                }
+            }
+
             function handleAuthSuccess(e) {
                 const userData = e.detail.user;
+                console.log('Auth Success - User Data:', userData);
+
                 sessionStorage.setItem('auth_token', e.detail.sessionToken);
                 sessionStorage.setItem('user_data', JSON.stringify(userData));
 
-                // Update UI
+                // Update UI based on roles and permissions
+                updateUIBasedOnPermissions(userData);
+
+                // Show authenticated UI
                 authModal.classList.add('w-hide');
                 signInButton.classList.add('w-hide');
                 userProfile.classList.remove('w-hide');
@@ -174,15 +267,14 @@
 
                 if (userData.name) {
                     userName.textContent = userData.name;
+                    userName.title = "Click to manage profile";
                 }
             }
 
-            // Handle Auth Error
             function handleAuthError(err) {
                 console.error('Auth Error:', err);
             }
 
-            // Handle Logout
             function handleLogout(error) {
                 if (error) {
                     console.error('Logout Error:', error);
@@ -193,7 +285,7 @@
                 window.location.reload();
             }
 
-            // Check Auth State on Load
+            // Check auth state on load
             const token = sessionStorage.getItem('auth_token');
             const userDataString = sessionStorage.getItem('user_data');
 
@@ -205,6 +297,8 @@
                 if (userData.name) {
                     userName.textContent = userData.name;
                 }
+                // Update permissions
+                updateUIBasedOnPermissions(userData);
             }
         });
     </script>

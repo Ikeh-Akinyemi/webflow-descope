@@ -161,3 +161,73 @@ body {
       margin: 0 20px;
   }
 }
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Style variations for different permission states */
+[data-permission="delete"] {
+  background-color: #dc3545;
+}
+
+[data-permission="publish"] {
+  background-color: #28a745;
+}
+
+/* Hide elements by default if they require permissions */
+[data-permission],
+[data-role] {
+  display: none;
+}
+
+/* Add these styles to your publishpro-cms.webflow.css */
+
+.nav-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  position: relative;
+}
+
+.user-profile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-name {
+  color: #ffffff;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.user-name:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.profile-widget-container {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  display: none;
+  z-index: 1000;
+}
+
+.profile-widget-container.active {
+  display: block;
+}
+
+/* Add some shadow and background to the widget */
+descope-user-profile-widget {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
