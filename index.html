@@ -1,26 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta content="Webflow" name="generator">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/publishpro-cms.webflow.css" rel="stylesheet" type="text/css">
     <title>PublishPro CMS</title>
+
+    <!-- Descope Web Component -->
+    <script src="https://unpkg.com/@descope/web-component@latest/dist/index.js"></script>
+    <!-- Descope User Profile Widget -->
+    <script src="https://static.descope.com/npm/@descope/user-profile-widget@1.9.1/dist/index.js"></script>
 </head>
+
 <body>
+    <!-- Auth Modal -->
+    <div class="auth-modal w-hide">
+        <div class="auth-container">
+            <descope-wc project-id="P2o6agrrcqa5Rpv14fHxBixhtyxG" flow-id="publishpro-auth-flow" theme="light" />
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="nav">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1 style="margin: 0;">PublishPro</h1>
-            <div>
-                <!-- These buttons will later be protected by authentication -->
-                <button class="button">Sign In</button>
+        <div class="nav-wrapper">
+            <h1 class="nav-logo">PublishPro</h1>
+            <div class="nav-actions">
+                <!-- Unauthenticated State -->
+                <button id="sign-in-button" class="button w-button">Sign In</button>
+
+                <!-- Authenticated State -->
+                <div id="user-profile" class="user-profile w-hide">
+                    <span id="user-name" class="user-name"></span>
+                    <descope-user-profile-widget project-id="P2o6agrrcqa5Rpv14fHxBixhtyxG"
+                        widget-id="user-profile-widget" theme="light" />
+                </div>
             </div>
         </div>
     </nav>
 
     <!-- Dashboard Layout -->
-    <div class="dashboard">
+    <div id="dashboard" class="dashboard w-hide">
         <!-- Sidebar -->
         <div class="sidebar">
             <div style="margin-bottom: 2rem;">
@@ -28,7 +49,7 @@
                 <button class="button" style="width: 100%; margin-bottom: 0.5rem;">New Article</button>
                 <button class="button button-secondary" style="width: 100%;">View Analytics</button>
             </div>
-            
+
             <div>
                 <h3>Navigation</h3>
                 <ul style="list-style: none; padding: 0;">
@@ -84,6 +105,8 @@
                             <td>2024-10-28</td>
                             <td>
                                 <button class="button" style="padding: 0.5rem;">Edit</button>
+                                <button class="button" style="padding: 0.5rem;">Delete</button>
+                                <button class="button" style="padding: 0.5rem;">Publish</button>
                             </td>
                         </tr>
                         <tr>
@@ -93,6 +116,8 @@
                             <td>2024-10-29</td>
                             <td>
                                 <button class="button" style="padding: 0.5rem;">Edit</button>
+                                <button class="button" style="padding: 0.5rem;">Delete</button>
+                                <button class="button" style="padding: 0.5rem;">Publish</button>
                             </td>
                         </tr>
                         <tr>
@@ -102,6 +127,8 @@
                             <td>2024-10-29</td>
                             <td>
                                 <button class="button" style="padding: 0.5rem;">Edit</button>
+                                <button class="button" style="padding: 0.5rem;">Delete</button>
+                                <button class="button" style="padding: 0.5rem;">Publish</button>
                             </td>
                         </tr>
                     </tbody>
@@ -109,5 +136,78 @@
             </div>
         </div>
     </div>
+
+    <!-- Auth Management Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const authModal = document.querySelector('.auth-modal');
+            const dashboard = document.getElementById('dashboard');
+            const signInButton = document.getElementById('sign-in-button');
+            const userProfile = document.getElementById('user-profile');
+            const userName = document.getElementById('user-name');
+
+            // Auth Component Setup
+            const authComponent = document.querySelector('descope-wc');
+            authComponent.addEventListener('success', handleAuthSuccess);
+            authComponent.addEventListener('error', handleAuthError);
+
+            // Profile Widget Setup
+            const profileWidget = document.querySelector('descope-user-profile-widget');
+            profileWidget.logout = handleLogout;
+
+            // Show Auth Modal
+            signInButton.addEventListener('click', function () {
+                authModal.classList.remove('w-hide');
+            });
+
+            // Handle Successful Auth
+            function handleAuthSuccess(e) {
+                const userData = e.detail.user;
+                sessionStorage.setItem('auth_token', e.detail.sessionToken);
+                sessionStorage.setItem('user_data', JSON.stringify(userData));
+
+                // Update UI
+                authModal.classList.add('w-hide');
+                signInButton.classList.add('w-hide');
+                userProfile.classList.remove('w-hide');
+                dashboard.classList.remove('w-hide');
+
+                if (userData.name) {
+                    userName.textContent = userData.name;
+                }
+            }
+
+            // Handle Auth Error
+            function handleAuthError(err) {
+                console.error('Auth Error:', err);
+            }
+
+            // Handle Logout
+            function handleLogout(error) {
+                if (error) {
+                    console.error('Logout Error:', error);
+                    return;
+                }
+                sessionStorage.removeItem('auth_token');
+                sessionStorage.removeItem('user_data');
+                window.location.reload();
+            }
+
+            // Check Auth State on Load
+            const token = sessionStorage.getItem('auth_token');
+            const userDataString = sessionStorage.getItem('user_data');
+
+            if (token && userDataString) {
+                const userData = JSON.parse(userDataString);
+                signInButton.classList.add('w-hide');
+                userProfile.classList.remove('w-hide');
+                dashboard.classList.remove('w-hide');
+                if (userData.name) {
+                    userName.textContent = userData.name;
+                }
+            }
+        });
+    </script>
 </body>
+
 </html>
