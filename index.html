@@ -7,50 +7,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/publishpro-cms.webflow.css" rel="stylesheet" type="text/css">
     <title>PublishPro CMS</title>
-
-    <!-- Descope Web Component -->
-    <script src="https://unpkg.com/@descope/web-component@latest/dist/index.js"></script>
-    <!-- Descope User Profile Widget -->
-    <script src="https://static.descope.com/npm/@descope/user-profile-widget@0.0.113/dist/index.js"></script>
 </head>
 
 <body>
-    <!-- Auth Modal -->
-    <div class="auth-modal w-hide">
-        <div class="auth-container">
-            <descope-wc project-id="P2o6agrrcqa5Rpv14fHxBixhtyxG" flow-id="publishpro-auth-flow" theme="light" />
-        </div>
-    </div>
-
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-wrapper">
             <h1 class="nav-logo">PublishPro</h1>
             <div class="nav-actions">
-                <!-- Unauthenticated State -->
+                <!-- Sign In Button Placeholder -->
                 <button id="sign-in-button" class="button w-button">Sign In</button>
-
-                <!-- Authenticated State -->
-                <div id="user-profile" class="user-profile w-hide">
-                    <span id="user-name" class="user-name"></span>
-                    <div id="profile-widget-container" class="profile-widget-container">
-                        <descope-user-profile-widget project-id="P2o6agrrcqa5Rpv14fHxBixhtyxG"
-                            widget-id="user-profile-widget" theme="light" />
-                    </div>
-                </div>
             </div>
         </div>
     </nav>
 
     <!-- Dashboard Layout -->
-    <div id="dashboard" class="dashboard w-hide">
+    <div id="dashboard" class="dashboard">
         <!-- Sidebar -->
         <div class="sidebar">
             <div style="margin-bottom: 2rem;">
                 <h3>Quick Actions</h3>
-                <button class="button" data-permission="create" style="width: 100%; margin-bottom: 0.5rem;">New
-                    Article</button>
-                <button class="button button-secondary" data-role="editor" style="width: 100%;">View Analytics</button>
+                <button class="button" style="width: 100%; margin-bottom: 0.5rem;">New Article</button>
+                <button class="button button-secondary" style="width: 100%;">View Analytics</button>
             </div>
 
             <div>
@@ -108,12 +86,9 @@
                             <td>2024-10-28</td>
                             <td>
                                 <div class="button-group">
-                                    <button class="button" data-permission="update"
-                                        style="padding: 0.5rem;">Edit</button>
-                                    <button class="button" data-permission="delete"
-                                        style="padding: 0.5rem;">Delete</button>
-                                    <button class="button" data-permission="publish"
-                                        style="padding: 0.5rem;">Publish</button>
+                                    <button class="button" style="padding: 0.5rem;">Edit</button>
+                                    <button class="button" style="padding: 0.5rem;">Delete</button>
+                                    <button class="button" style="padding: 0.5rem;">Publish</button>
                                 </div>
                             </td>
                         </tr>
@@ -124,12 +99,9 @@
                             <td>2024-10-29</td>
                             <td>
                                 <div class="button-group">
-                                    <button class="button" data-permission="update"
-                                        style="padding: 0.5rem;">Edit</button>
-                                    <button class="button" data-permission="delete"
-                                        style="padding: 0.5rem;">Delete</button>
-                                    <button class="button" data-permission="publish"
-                                        style="padding: 0.5rem;">Publish</button>
+                                    <button class="button" style="padding: 0.5rem;">Edit</button>
+                                    <button class="button" style="padding: 0.5rem;">Delete</button>
+                                    <button class="button" style="padding: 0.5rem;">Publish</button>
                                 </div>
                             </td>
                         </tr>
@@ -140,12 +112,9 @@
                             <td>2024-10-29</td>
                             <td>
                                 <div class="button-group">
-                                    <button class="button" data-permission="update"
-                                        style="padding: 0.5rem;">Edit</button>
-                                    <button class="button" data-permission="delete"
-                                        style="padding: 0.5rem;">Delete</button>
-                                    <button class="button" data-permission="publish"
-                                        style="padding: 0.5rem;">Publish</button>
+                                    <button class="button" style="padding: 0.5rem;">Edit</button>
+                                    <button class="button" style="padding: 0.5rem;">Delete</button>
+                                    <button class="button" style="padding: 0.5rem;">Publish</button>
                                 </div>
                             </td>
                         </tr>
@@ -155,151 +124,14 @@
         </div>
     </div>
 
-    <!-- Auth Management Script -->
     <script>
+        // Basic initialization
         document.addEventListener('DOMContentLoaded', function () {
-            const authModal = document.querySelector('.auth-modal');
-            const dashboard = document.getElementById('dashboard');
             const signInButton = document.getElementById('sign-in-button');
-            const userProfile = document.getElementById('user-profile');
-            const userName = document.getElementById('user-name');
-            const profileWidgetContainer = document.getElementById('profile-widget-container');
-
-            // Auth Component Setup
-            const authComponent = document.querySelector('descope-wc');
-            authComponent.addEventListener('success', handleAuthSuccess);
-            authComponent.addEventListener('error', handleAuthError);
-
-            // Profile Widget Setup
-            const profileWidget = document.querySelector('descope-user-profile-widget');
-            profileWidget.logout = handleLogout;
-
-            userName.addEventListener('click', function (e) {
-                e.stopPropagation();
-                profileWidgetContainer.classList.toggle('active');
-            });
-
-            // Close profile widget when clicking outside
-            document.addEventListener('click', function (e) {
-                if (!profileWidgetContainer.contains(e.target) &&
-                    !userNameElement.contains(e.target)) {
-                    profileWidgetContainer.classList.remove('active');
-                }
-            });
-
-            // Show Auth Modal
+            
             signInButton.addEventListener('click', function () {
-                authModal.classList.remove('w-hide');
+                alert('Authentication not implemented yet!');
             });
-
-            function checkPermission(user, permission) {
-                // Check if user has editor role (case-insensitive check)
-                const hasEditorRole = user.roleNames && user.roleNames.some(role =>
-                    role.toLowerCase() === 'editor'
-                );
-
-                // Check if user has writer role (case-insensitive check)
-                const hasWriterRole = user.roleNames && user.roleNames.some(role =>
-                    role.toLowerCase() === 'writer'
-                );
-
-                console.log(`Checking permission ${permission} for roles:`, user.roleNames);
-                console.log('Has Editor Role:', hasEditorRole);
-                console.log('Has Writer Role:', hasWriterRole);
-
-                // Editor has all permissions
-                if (hasEditorRole) {
-                    return true;
-                }
-
-                // Writer has create and update permissions
-                if (hasWriterRole) {
-                    return ['create', 'update'].includes(permission);
-                }
-
-                return false;
-            }
-
-            function updateUIBasedOnPermissions(user) {
-                console.log('Updating UI for roles:', user.roleNames);
-
-                const permissions = ['create', 'update', 'delete', 'publish'];
-
-                permissions.forEach(permission => {
-                    const elements = document.querySelectorAll(`[data-permission="${permission}"]`);
-                    const shouldDisplay = checkPermission(user, permission);
-                    console.log(`Found ${elements.length} elements with permission ${permission}`);
-                    elements.forEach(element => {
-                        element.style.display = shouldDisplay ? 'inline-block' : 'none';
-                        console.log(`Setting ${permission} element display to:`, element.style.display);
-                    });
-                });
-
-                if (user.roleNames) {
-                    const isEditor = user.roleNames.some(role => role.toLowerCase() === 'editor');
-                    const isWriter = user.roleNames.some(role => role.toLowerCase() === 'writer');
-
-                    document.querySelectorAll('[data-role="editor"]').forEach(element => {
-                        element.style.display = isEditor ? 'block' : 'none';
-                    });
-
-                    document.querySelectorAll('[data-role="writer"]').forEach(element => {
-                        element.style.display = isWriter ? 'block' : 'none';
-                    });
-                }
-            }
-
-            function handleAuthSuccess(e) {
-                const userData = e.detail.user;
-                console.log('Auth Success - User Data:', userData);
-
-                sessionStorage.setItem('auth_token', e.detail.sessionToken);
-                sessionStorage.setItem('user_data', JSON.stringify(userData));
-
-                // Update UI based on roles and permissions
-                updateUIBasedOnPermissions(userData);
-
-                // Show authenticated UI
-                authModal.classList.add('w-hide');
-                signInButton.classList.add('w-hide');
-                userProfile.classList.remove('w-hide');
-                dashboard.classList.remove('w-hide');
-
-                if (userData.name) {
-                    userName.textContent = userData.name;
-                    userName.title = "Click to manage profile";
-                }
-            }
-
-            function handleAuthError(err) {
-                console.error('Auth Error:', err);
-            }
-
-            function handleLogout(error) {
-                if (error) {
-                    console.error('Logout Error:', error);
-                    return;
-                }
-                sessionStorage.removeItem('auth_token');
-                sessionStorage.removeItem('user_data');
-                window.location.reload();
-            }
-
-            // Check auth state on load
-            const token = sessionStorage.getItem('auth_token');
-            const userDataString = sessionStorage.getItem('user_data');
-
-            if (token && userDataString) {
-                const userData = JSON.parse(userDataString);
-                signInButton.classList.add('w-hide');
-                userProfile.classList.remove('w-hide');
-                dashboard.classList.remove('w-hide');
-                if (userData.name) {
-                    userName.textContent = userData.name;
-                }
-                // Update permissions
-                updateUIBasedOnPermissions(userData);
-            }
         });
     </script>
 </body>
